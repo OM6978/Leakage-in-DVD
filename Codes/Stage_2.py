@@ -42,13 +42,13 @@ def get_csv(text,name):
     df["max_leak_1"] = df[[s for s in df.columns if s.startswith('i') and s[-2] == '1']].abs().max(axis=1)
     df["max_leak_2"] = df[[s for s in df.columns if s.startswith('i') and s[-2] == '2']].abs().max(axis=1)
     
-    add_prev_entry(f"{name[:4]}_W=32.csv",df)
-    df.to_csv(name,index=False)
+    # add_prev_entry(f"{name[:4]}_W=32.csv",df)
+    df.to_csv(f'../Matrix/Stage-2/{name}',index=False)
 
 def get_data(file_i):
     os.system(f"echo 'exit' | ngspice {file_i} > {'o.txt'}")
 
-    get_csv("o.txt",f"{file_i[:4]}_s2.csv")
+    get_csv("o.txt",f"{file_i[:4]}.csv")
     os.system(f"rm o.txt")
 
 get_data(file1)

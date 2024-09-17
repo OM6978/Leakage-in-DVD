@@ -53,7 +53,7 @@ def make_csv(filee,name):
         df2.columns = titles[i][2:]
         df = pd.concat([df,df2],axis=1)
         
-    df.to_csv(f'{name[:-4]}.csv',index = False)
+    df.to_csv(f'../Matrix/Stage-1/{name[:-4]}.csv',index = False)
     os.system(f"rm {name}")
 
 def sweep_W(filee):
