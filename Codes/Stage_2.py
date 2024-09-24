@@ -26,6 +26,9 @@ def add_prev_entry(file,df):
     vgs1_arr = (df['v(gate1)'] - df['v(alimd)']).to_numpy()
     vds1_arr = (df['v(drain1)'] - df['v(alimd)']).to_numpy()
 
+    vgs1_new = (df['v(gate1)']).to_numpy()
+    vds1_new = (df['v(drain1)']).to_numpy()
+
     key_tuples = np.array(list(zip(vgs1_arr, vds1_arr)))
     is_in_v_dict = np.isin(key_tuples, list(V_dict.keys()))
     result = np.all(is_in_v_dict, axis=1)
@@ -34,9 +37,9 @@ def add_prev_entry(file,df):
     for i in range(len(result)):
         if result[i]:
             new_comp.append(V_dict[(vgs1_arr[i],vds1_arr[i])])
-        else : new_comp.append(-1)
+        else : new_comp.append(V_dict[(vgs1_new[i],vds1_new[i])])
 
-    df['prev_leakage_1'] = np.where(result, new_comp,-1)
+    df['prev_leakage_1'] = np.array(new_comp)
 
     V_dict = {}
     for i in range(len(Vg_dict)):
