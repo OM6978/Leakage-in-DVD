@@ -1,15 +1,19 @@
 import os
 import numpy as np
 import pandas as pd
+import math
 
-file1 = "nmos_2_stacked.ckt"
-file2 = "pmos_2_stacked.ckt"
+file1 = "nmos_2_stacked-1.ckt"
+file2 = "pmos_2_stacked-1.ckt"
 
 def read__line(tables,line):
     strs = line.split()
     if strs[0] in tables:
         tables[strs[0]].append(float(strs[2]))
     else : tables[strs[0]] = []
+
+def euclidean_distance(t1, t2):
+    return math.sqrt((t1[0] - t2[0])**2 + (t1[1] - t2[1])**2)
 
 def add_prev_entry(file,df):
     prev_df = pd.read_csv(file)
@@ -23,42 +27,25 @@ def add_prev_entry(file,df):
     for i in range(len(Vg_dict)):
         V_dict[(Vg_dict[i],Vd_dict[i])] = max_p_currs['max_leak'][i]
 
-    vgs1_arr = (df['v(gate1)'] - df['v(alimd)']).to_numpy()
-    vds1_arr = (df['v(drain1)'] - df['v(alimd)']).to_numpy()
-
-    vgs1_new = (df['v(gate1)']).to_numpy()
-    vds1_new = (df['v(drain1)']).to_numpy()
-
-    key_tuples = np.array(list(zip(vgs1_arr, vds1_arr)))
-    is_in_v_dict = np.isin(key_tuples, list(V_dict.keys()))
-    result = np.all(is_in_v_dict, axis=1)
+    vgs1_arr = (df['v(gate1)']).to_numpy()
+    vds1_arr = (df['v(drain1)']).to_numpy()
 
     new_comp = []
-    for i in range(len(result)):
-        if result[i]:
-            new_comp.append(V_dict[(vgs1_arr[i],vds1_arr[i])])
-        else : new_comp.append(V_dict[(vgs1_new[i],vds1_new[i])])
+    for i in range(len(vgs1_arr)):
+            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i])))
+            new_comp.append(V_dict[closest_key])
 
     df['prev_leakage_1'] = np.array(new_comp)
 
-    V_dict = {}
-    for i in range(len(Vg_dict)):
-        V_dict[(Vg_dict[i],Vd_dict[i])] = max_p_currs['max_leak'][i]
-
-    vgs2_arr = df['v(gate2)'].to_numpy()
-    vds2_arr = df['v(alimd)'].to_numpy()
-
-    key_tuples = np.array(list(zip(vgs2_arr, vds2_arr)))
-    is_in_v_dict = np.isin(key_tuples, list(V_dict.keys()))
-    result = np.all(is_in_v_dict, axis=1)
+    vgs2_arr = (df['v(gate2)'] - df['v(drain1)']).to_numpy()
+    vds2_arr = (df['v(alimd)'] - df['v(drain1)']).to_numpy()
 
     new_comp = []
-    for i in range(len(result)):
-        if result[i]:
-            new_comp.append(V_dict[(vgs2_arr[i],vds2_arr[i])])
-        else : new_comp.append(-1)
+    for i in range(len(vgs1_arr)):
+            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs2_arr[i],vds2_arr[i])))
+            new_comp.append(V_dict[closest_key])
 
-    df['prev_leakage_2'] = np.where(result, new_comp , -1)
+    df['prev_leakage_2'] = np.array(new_comp)
 
 def get_csv(text,name):         
     tables = {}
@@ -72,6 +59,7 @@ def get_csv(text,name):
             read__line(tables,line)
 
     df = pd.DataFrame.from_dict(tables)
+    df["i(vs2)"] = df["i(vd1)"]
 
     df["max_leak_1"] = df[[s for s in df.columns if s.startswith('i') and s[-2] == '1']].abs().max(axis=1)
     df["max_leak_2"] = df[[s for s in df.columns if s.startswith('i') and s[-2] == '2']].abs().max(axis=1)
@@ -84,6 +72,9 @@ def get_data(file_i):
 
     get_csv("o.txt",f"{file_i[:4]}.csv")
     os.system(f"rm o.txt")
+
+if os.path.isdir('Codes'):
+    os.chdir("./Codes")
 
 get_data(file1)
 get_data(file2)
