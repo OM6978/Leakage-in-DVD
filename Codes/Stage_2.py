@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import math
 
-file1 = "nmos_2_stacked-1.ckt"
-file2 = "pmos_2_stacked-1.ckt"
+file1 = "nmos_2_stacked.ckt"
+file2 = "pmos_2_stacked.ckt"
 
 def read__line(tables,line):
     strs = line.split()
@@ -37,8 +37,12 @@ def add_prev_entry(file,df):
 
     df['prev_leakage_1'] = np.array(new_comp)
 
-    vgs2_arr = (df['v(gate2)'] - df['v(drain1)']).to_numpy()
-    vds2_arr = (df['v(alimd)'] - df['v(drain1)']).to_numpy()
+    if "pmos" in file:
+        vgs2_arr = (1.1 - df['v(drain1)'] + df['v(gate2)']).to_numpy()
+        vds2_arr = (1.1 - df['v(drain1)'] + df['v(alimd)']).to_numpy()
+    else:
+        vgs2_arr = (df['v(gate2)'] - df['v(drain1)']).to_numpy()
+        vds2_arr = (df['v(alimd)'] - df['v(drain1)']).to_numpy()
 
     new_comp = []
     for i in range(len(vgs1_arr)):

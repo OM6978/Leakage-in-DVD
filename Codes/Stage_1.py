@@ -79,5 +79,8 @@ def sweep_W(filee):
         make_csv(f"{filee[:4]}_temp_{i+1}.ckt",f"{filee[:4]}_W={W*(i+1)}.txt")
         os.system(f"rm {filee[:4]}_temp_{i+1}.ckt")
 
+if os.path.isdir('Codes'):
+    os.chdir("./Codes")
+
 sweep_W(file1)
 sweep_W(file2)
