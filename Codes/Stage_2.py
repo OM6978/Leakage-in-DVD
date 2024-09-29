@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import math
 
-file1 = "nmos_2_stacked.ckt"
-file2 = "pmos_2_stacked.ckt"
+file1 = "nmos_2_stacked-2.ckt"
+file2 = "pmos_2_stacked-2.ckt"
 
 def read__line(tables,line):
     strs = line.split()
