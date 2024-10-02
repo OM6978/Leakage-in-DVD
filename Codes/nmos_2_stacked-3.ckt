@@ -1,0 +1,54 @@
+.INCLUDE '32nm_HP.pm'
+
+.PARAM Lmin=32n
+.PARAM Wmin=32n
+.PARAM Ldiff=64n
+.PARAM supply=1.1
+.temp 25
+
+Mn1 drain1 gate1 source1 body1 nmos W={Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
+Mn2 drain2 gate2 source2 body2 nmos W={Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
+
+Vd2     drain2  alimd 0
+Vg2     gate2   alimg2  0      
+*Vs2    source2  drain1 0
+Vb2     body2 0  0
+
+Vd1     drain1  source2  0
+Vg1     gate1   alimg1   0      
+Vs1     source1 0   0
+Vb1     body1 0  0
+
+Vgg1 alimg1 0   0
+Vgg2 alimg2 0   0
+Vdd1 alimd  0   0
+
+.CONTROL
+
+let vol1 = 0
+let sup = 1.1
+let total = 0
+
+while vol1 le sup
+
+    alter Vgg1 = vol1
+
+    let vol2 = 0
+    while vol2 le sup
+
+        alter Vgg2 = vol2
+        if (vol1 = 1.1 & vol2 = 1.1)
+            alter Vdd1 = 0
+        else 
+            alter Vdd1 = 1.1
+        end
+        
+        op
+        print V(gate1) V(gate2) V(drain1) V(drain2) I(Vd2) I(Vg2) I(Vb2) I(Vd1) I(Vg1) I(Vs1) I(Vb1)
+        print ""
+        let vol2 = vol2 + 1.1
+    end
+    let vol1 = vol1 + 1.1
+end
+.ENDC
+.END
