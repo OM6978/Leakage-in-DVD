@@ -17,25 +17,33 @@ def euclidean_distance(t1, t2):
 
 def add_prev_entry(file,df):
     prev_df = pd.read_csv(file)
-    prev_df["max_leak"] = prev_df[[s for s in prev_df.columns if s.startswith('i')]].abs().max(axis=1)
 
     max_p_currs = prev_df.to_dict()
+
     Vg_dict = max_p_currs['v(gate)']
     Vd_dict = max_p_currs['v(drain)']
     
     V_dict = {}
     for i in range(len(Vg_dict)):
-        V_dict[(Vg_dict[i],Vd_dict[i])] = max_p_currs['max_leak'][i]
+        V_dict[(Vg_dict[i],Vd_dict[i])] = (max_p_currs['i(vg)'][i],max_p_currs['i(vd)'][i])
         
     vgs1_arr = (df['v(gate1)']).to_numpy()
     vds1_arr = (df['v(drain1)']).to_numpy()
 
     new_comp = []
     for i in range(len(vgs1_arr)):
-            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i])))
-            new_comp.append(V_dict[closest_key])
+        closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i])))
+        if vgs1_arr[i] == 1.1:
+            if "pmos" in file:
+                new_comp.append(V_dict[closest_key][1])
+            else: new_comp.append(V_dict[closest_key][0])
+        else:
+            if "pmos" in file:
+                new_comp.append(V_dict[closest_key][0])
+            else: new_comp.append(V_dict[closest_key][1])
 
     df['prev_leakage_1'] = np.array(new_comp)
+
     if "pmos" in file:
         vgs2_arr = (1.1 - df['v(drain1)'] + df['v(gate2)']).to_numpy()
         vds2_arr = (1.1 - df['v(drain1)'] + df['v(drain2)']).to_numpy()
@@ -46,10 +54,17 @@ def add_prev_entry(file,df):
     new_comp = []
     for i in range(len(vgs1_arr)):
             closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs2_arr[i],vds2_arr[i])))
-            new_comp.append(V_dict[closest_key])
+            if vgs2_arr[i] == 1.1:
+                if "pmos" in file:
+                    new_comp.append(V_dict[closest_key][1])
+                else: new_comp.append(V_dict[closest_key][0])
+            else:
+                if "pmos" in file:
+                    new_comp.append(V_dict[closest_key][0])
+                else: new_comp.append(V_dict[closest_key][1])
 
     df['prev_leakage_2'] = np.array(new_comp)
-    df['total_prev'] = df['prev_leakage_1'] + df['prev_leakage_2']
+    df['total_prev'] = df['prev_leakage_1'].abs() + df['prev_leakage_2'].abs()
 
 def get_csv(text,name):         
     tables = {}
