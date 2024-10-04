@@ -33,7 +33,11 @@ def add_prev_entry(file,df):
 
     new_comp = []
     for i in range(len(vgs1_arr)):
-        closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i],0)))
+        if "nmos" in file:
+            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i],0)))
+        else: 
+            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i],1.1)))
+
         if vgs1_arr[i] == 1.1:
             if "pmos" in file:
                 new_comp.append(V_dict[closest_key][1])
