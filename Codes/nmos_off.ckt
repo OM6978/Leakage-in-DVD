@@ -1,0 +1,26 @@
+.INCLUDE '32nm_HP.pm'
+
+.PARAM Lmin=32n
+.PARAM Wmin=32n
+.PARAM Ldiff=64n
+.PARAM supply=1.1
+.temp 25
+
+Mn drain gate source body nmos W={Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
+
+Vd 	drain	alimd   0
+Vg 	gate	0   0		
+Vs 	source	alims   0
+Vb 	body 0  0
+Vdd alimd 0	  DC
+Vss alims 0   DC
+
+.CONTROL
+
+DC Vdd 0 1.1 0.01 Vss 0 1.1 0.01
+
+print  V(drain) V(gate) V(source) V(body) I(Vd) I(Vg) I(Vs) I(Vb)
+print ""
+
+.ENDC
+.END

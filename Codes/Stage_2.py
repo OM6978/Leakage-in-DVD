@@ -44,12 +44,8 @@ def add_prev_entry(file,df):
 
     df['prev_leakage_1'] = np.array(new_comp)
 
-    if "pmos" in file:
-        vgs2_arr = (1.1 - df['v(drain1)'] + df['v(gate2)']).to_numpy()
-        vds2_arr = (1.1 - df['v(drain1)'] + df['v(drain2)']).to_numpy()
-    else:
-        vgs2_arr = (df['v(gate2)'] - df['v(drain1)']).to_numpy()
-        vds2_arr = (df['v(drain2)'] - df['v(drain1)']).to_numpy()
+    vgs2_arr = (df['v(gate2)']).to_numpy()
+    vds2_arr = (df['v(drain2)']).to_numpy()
 
     new_comp = []
     for i in range(len(vgs1_arr)):

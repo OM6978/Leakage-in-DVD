@@ -3,10 +3,10 @@ import numpy as np
 import pandas as pd
 
 loops = 6
-file1 = "nmos_multi_value_change.ckt"
-file2 = "pmos_multi_value_change.ckt"
+file1 = "nmos"
+file2 = "pmos"
 
-def make_csv(filee,name):
+def get_df(filee,name):
     os.system(f"echo 'exit' | ngspice {filee} > {name}")
 
     mat = []
@@ -42,33 +42,49 @@ def make_csv(filee,name):
     for i in range(1,len(mat)):
         mat[i] = np.array(mat[i])
         mat[i] = mat[i][:,2:]
-
-        # mat[i][:,1:] = np.float64(mat[i][:,1:])
-
-        # df = pd.DataFrame(np.float64(mat[i]))
         df2 = pd.DataFrame(mat[i])
-
-        # df2.columns = titles[i][1:]
-        # df = pd.merge(df, df2)
         df2.columns = titles[i][2:]
         df = pd.concat([df,df2],axis=1)
-        
-    df.to_csv(f'../Matrix/Stage-1/{name[:-4]}.csv',index = False)
+
     os.system(f"rm {name}")
+    return df
+
+def make_csv(filee_on,filee_off,name):
+    df_1 = get_df(filee_on,name)
+    df_2 = get_df(filee_off,name)
+
+    df = pd.concat([df_1, df_2], ignore_index=True)
+    df.to_csv(f'../Matrix/Stage-1/{name[:-4]}.csv',index = False)
 
 def sweep_W(filee):
     for i in range(loops):
-        os.system(f"touch {filee[:4]}_temp_{i+1}.ckt")
+        os.system(f"touch {filee}_on_temp_{i+1}.ckt")
+        os.system(f"touch {filee}_off_temp_{i+1}.ckt")
     
     W = "unknown"
 
-    with open(filee,'r') as file:
+    with open(f"{filee}_on.ckt",'r') as file:
         while True:
             line = file.readline()
             if not line: break
 
             for i in range(loops):
-                with open(f"{filee[:4]}_temp_{i+1}.ckt",'a') as lol:
+                with open(f"{filee}_on_temp_{i+1}.ckt",'a') as lol:
+                    if(len(line) > 12 and line[:12] == ".PARAM Wmin="):
+                        if W == "unknown":
+                            W = int(line[12:-2])
+                        lol.write(line[:12] + str(int(line[12:-2])*(i+1)) + line[-2:])
+                    else: lol.write(line)
+
+    W = "unknown"
+
+    with open(f"{filee}_off.ckt",'r') as file:
+        while True:
+            line = file.readline()
+            if not line: break
+
+            for i in range(loops):
+                with open(f"{filee}_off_temp_{i+1}.ckt",'a') as lol:
                     if(len(line) > 12 and line[:12] == ".PARAM Wmin="):
                         if W == "unknown":
                             W = int(line[12:-2])
@@ -76,8 +92,9 @@ def sweep_W(filee):
                     else: lol.write(line)
 
     for i in range(loops):
-        make_csv(f"{filee[:4]}_temp_{i+1}.ckt",f"{filee[:4]}_W={W*(i+1)}.txt")
-        os.system(f"rm {filee[:4]}_temp_{i+1}.ckt")
+        make_csv(f"{filee}_on_temp_{i+1}.ckt",f"{filee}_off_temp_{i+1}.ckt",f"{filee}_W={W*(i+1)}.txt")
+        os.system(f"rm {filee}_on_temp_{i+1}.ckt")
+        os.system(f"rm {filee}_off_temp_{i+1}.ckt")
 
 if os.path.isdir('Codes'):
     os.chdir("./Codes")
