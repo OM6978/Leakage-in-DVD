@@ -6,6 +6,8 @@ import math
 file1 = "nmos_2_stacked-3.ckt"
 file2 = "pmos_2_stacked-3.ckt"
 
+loops = 6
+
 def read__line(tables,line):
     strs = line.split()
     if strs[0] in tables:
@@ -94,17 +96,40 @@ def get_csv(text,name):
         df.loc[(df['v(gate1)'] == 1.1) & (df['v(gate2)'] == 0), 'total'] = df['i(vd1)'].abs() + df['i(vg2)'].abs()
         df.loc[(df['v(gate1)'] == 0) & (df['v(gate2)'] == 0), 'total'] = df['i(vg1)'].abs() + df['i(vg2)'].abs()
     
-    add_prev_entry(f"../Matrix/Stage-1/{name[:4]}_W=32.csv",df)
+    add_prev_entry(f"../Matrix/Stage-1/{name}",df)
     df.to_csv(f'../Matrix/Stage-2/{name}',index=False)
 
-def get_data(file_i):
-    os.system(f"echo 'exit' | ngspice {file_i} > {'o.txt'}")
+def get_data(file_i,name):
+    os.system(f"echo 'exit' | ngspice {file_i} > {name}")
 
-    get_csv("o.txt",f"{file_i[:4]}.csv")
-    os.system(f"rm o.txt")
+    get_csv(name,f"{name[:-4]}.csv")
+    os.system(f"rm {name}")
+
+def sweep_W(filee):
+    for i in range(loops):
+        os.system(f"touch {filee[:4]}_temp_{i+1}.ckt")
+    
+    W = "unknown"
+
+    with open(filee,'r') as file:
+        while True:
+            line = file.readline()
+            if not line: break
+
+            for i in range(loops):
+                with open(f"{filee[:4]}_temp_{i+1}.ckt",'a') as lol:
+                    if(len(line) > 12 and line[:12] == ".PARAM Wmin="):
+                        if W == "unknown":
+                            W = int(line[12:-2])
+                        lol.write(line[:12] + str(int(line[12:-2])*(i+1)) + line[-2:])
+                    else: lol.write(line)
+
+    for i in range(loops):
+        get_data(f"{filee[:4]}_temp_{i+1}.ckt",f'{filee[:4]}_W={W*(i+1)}.txt')
+        os.system(f"rm {filee[:4]}_temp_{i+1}.ckt")
 
 if os.path.isdir('Codes'):
     os.chdir("./Codes")
 
-get_data(file1)
-get_data(file2)
+sweep_W(file1)
+sweep_W(file2)
