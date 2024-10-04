@@ -13,7 +13,7 @@ def read__line(tables,line):
     else : tables[strs[0]] = [float(strs[2])]
 
 def euclidean_distance(t1, t2):
-    return math.sqrt((t1[0] - t2[0])**2 + (t1[1] - t2[1])**2)
+    return math.sqrt((t1[0] - t2[0])**2 + (t1[1] - t2[1])**2 + (t1[2] - t2[2])**2)
 
 def add_prev_entry(file,df):
     prev_df = pd.read_csv(file)
@@ -22,17 +22,18 @@ def add_prev_entry(file,df):
 
     Vg_dict = max_p_currs['v(gate)']
     Vd_dict = max_p_currs['v(drain)']
+    Vs_dict = max_p_currs['v(source)']
     
     V_dict = {}
     for i in range(len(Vg_dict)):
-        V_dict[(Vg_dict[i],Vd_dict[i])] = (max_p_currs['i(vg)'][i],max_p_currs['i(vd)'][i])
+        V_dict[(Vg_dict[i],Vd_dict[i],Vs_dict[i])] = (max_p_currs['i(vg)'][i],max_p_currs['i(vd)'][i])
         
     vgs1_arr = (df['v(gate1)']).to_numpy()
     vds1_arr = (df['v(drain1)']).to_numpy()
 
     new_comp = []
     for i in range(len(vgs1_arr)):
-        closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i])))
+        closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs1_arr[i],vds1_arr[i],0)))
         if vgs1_arr[i] == 1.1:
             if "pmos" in file:
                 new_comp.append(V_dict[closest_key][1])
@@ -46,10 +47,11 @@ def add_prev_entry(file,df):
 
     vgs2_arr = (df['v(gate2)']).to_numpy()
     vds2_arr = (df['v(drain2)']).to_numpy()
+    vss_2_arr = (df['v(drain1)']).to_numpy()
 
     new_comp = []
     for i in range(len(vgs1_arr)):
-            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs2_arr[i],vds2_arr[i])))
+            closest_key = min(V_dict.keys(), key=lambda k: euclidean_distance(k, (vgs2_arr[i],vds2_arr[i],vss_2_arr[i])))
             if vgs2_arr[i] == 1.1:
                 if "pmos" in file:
                     new_comp.append(V_dict[closest_key][1])
