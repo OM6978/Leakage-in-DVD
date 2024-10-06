@@ -2,14 +2,15 @@
 
 .INCLUDE '32nm_HP.pm'
 .PARAM Lmin = 32n
-.PARAM Wmin = 32n
+.PARAM nWmin = 32n
+.PARAM pWmin = 128n
 .PARAM Ldiff = 64n
 
-Mp1 node_x node_a vdd vdd pmos W={4*Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
-Mp2 node_out node_b node_x vdd pmos W={4*Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
+Mp1 node_x node_a vdd vdd pmos W={pWmin} L={Lmin} AS={pWmin*Ldiff} AD={pWmin*Ldiff} PS={2*(Ldiff+pWmin)} PD={2*(Ldiff+pWmin)}
+Mp2 node_out node_b node_x vdd pmos W={pWmin} L={Lmin} AS={pWmin*Ldiff} AD={pWmin*Ldiff} PS={2*(Ldiff+pWmin)} PD={2*(Ldiff+pWmin)}
 
-Mn1 node_out node_a 0 0 nmos W={Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
-Mn2 node_out node_b 0 0 nmos W={Wmin} L={Lmin} AS={Wmin*Ldiff} AD={Wmin*Ldiff} PS={2*(Ldiff+Wmin)} PD={2*(Ldiff+Wmin)}
+Mn1 node_out node_a 0 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
+Mn2 node_out node_b 0 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
 
 * AS - source area
 * PS - source perimeter
