@@ -1,0 +1,7 @@
+.subckt or_4 node_a node_b node_c node_d node_out vdd gnd
+
+x1 node_a node_b node_c node_d n1_out vdd gnd nor_4
+x2 n1_out node_out vdd gnd inv
+
+.ends or_4
+

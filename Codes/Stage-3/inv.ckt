@@ -1,0 +1,24 @@
+not gate implementation
+
+.INCLUDE '32nm_HP.pm'
+.include inv.sub
+.PARAM supply = 1.1
+.global gnd
+.temp 25
+
+Vdd node_vdd gnd 'SUPPLY'
+
+V_a node_a gnd PULSE(0 1.1 0ns 100ps 100ps 20ns 40ns)
+
+x1 node_a node_out node_vdd gnd inv
+
+.tran 1n 400n
+.control
+run
+set color0 = rgb:f/f/e
+set color1 = black
+plot v(node_a) v(node_out)+1.5
+
+.end
+.endc
+

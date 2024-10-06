@@ -1,0 +1,27 @@
+3-input-NAND gate implementation
+
+.INCLUDE '32nm_HP.pm'
+.include nand_2.sub
+.include nand_3.sub
+.PARAM supply = 1.1
+.global gnd
+.temp 25
+
+Vdd node_vdd gnd 'SUPPLY'
+
+V_a node_a gnd PULSE(0 1.1 0ns 100ps 100ps 20ns 40ns)
+V_b node_b gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
+V_c node_c gnd PULSE(0 1.1 0ns 100ps 100ps 80ns 100ns)
+
+x1 node_a node_b node_c node_out node_vdd gnd nand_3
+
+.tran 1n 400n
+.control
+run
+set color0 = rgb:f/f/e
+set color1 = black
+plot v(node_a) v(node_b)+1.5 v(node_c)+3 v(node_out)+4.5
+
+.end
+.endc
+

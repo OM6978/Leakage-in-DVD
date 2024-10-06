@@ -1,0 +1,11 @@
+.subckt nand_4 node_a node_b node_c node_d node_out vdd gnd
+
+x1 node_a node_b n1_out vdd gnd nand_2
+x2 node_c node_d n2_out vdd gnd nand_2
+x3 n1_out n1_out n3_out vdd gnd nand_2
+x4 n2_out n2_out n4_out vdd gnd nand_2
+x5 n3_out n4_out node_out vdd gnd nand_2
+
+.ends nand_4
+
+

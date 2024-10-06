@@ -1,0 +1,25 @@
+2-input-NOR gate implementation
+
+.INCLUDE '32nm_HP.pm'
+.include nor_2.sub
+.PARAM supply = 1.1
+.global gnd
+.temp 25
+
+Vdd node_vdd gnd 'SUPPLY'
+
+V_a node_a gnd PULSE(0 1.1 0ns 100ps 100ps 20ns 40ns)
+V_b node_b gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
+
+x1 node_a node_b node_out node_vdd gnd nor_2
+
+.tran 1n 400n
+.control
+run
+set color0 = rgb:f/f/e
+set color1 = black
+plot v(node_a) v(node_b)+1.5 v(node_out)+3
+
+.end
+.endc
+

@@ -1,0 +1,7 @@
+.subckt and_3 node_a node_b node_c node_out vdd gnd
+
+x1 node_a node_b node_c n1_out vdd gnd nand_3
+x2 n1_out node_out vdd gnd inv
+
+.ends and_3
+
