@@ -96,8 +96,8 @@ def get_csv(text,name):
         df.loc[(df['v(gate1)'] == 1.1) & (df['v(gate2)'] == 0), 'total'] = df['i(vd1)'].abs() + df['i(vg2)'].abs()
         df.loc[(df['v(gate1)'] == 0) & (df['v(gate2)'] == 0), 'total'] = df['i(vg1)'].abs() + df['i(vg2)'].abs()
     
-    add_prev_entry(f"../Matrix/Stage-1/{name}",df)
-    df.to_csv(f'../Matrix/Stage-2/{name}',index=False)
+    add_prev_entry(f"../../Matrix/Stage-1/{name}",df)
+    df.to_csv(f'../../Matrix/Stage-2/{name}',index=False)
 
 def get_data(file_i,name):
     os.system(f"echo 'exit' | ngspice {file_i} > {name}")
@@ -130,6 +130,9 @@ def sweep_W(filee):
 
 if os.path.isdir('Codes'):
     os.chdir("./Codes")
+
+if os.path.isdir('Stage-2'):
+    os.chdir("./Stage-2")
 
 sweep_W(file1)
 sweep_W(file2)

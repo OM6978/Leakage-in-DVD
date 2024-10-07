@@ -54,7 +54,7 @@ def make_csv(filee_on,filee_off,name):
     df_2 = get_df(filee_off,name)
 
     df = pd.concat([df_1, df_2], ignore_index=True)
-    df.to_csv(f'../Matrix/Stage-1/{name[:-4]}.csv',index = False)
+    df.to_csv(f'../../Matrix/Stage-1/{name[:-4]}.csv',index = False)
 
 def sweep_W(filee):
     for i in range(loops):
@@ -98,6 +98,9 @@ def sweep_W(filee):
 
 if os.path.isdir('Codes'):
     os.chdir("./Codes")
+
+if os.path.isdir('Stage-1'):
+    os.chdir('./Stage-1')
 
 sweep_W(file1)
 sweep_W(file2)
