@@ -144,6 +144,11 @@ def read__line(line,file):
     gates = ['NOT','NAND','NOR','AND','OR']
     gate = strs[0]
 
+    if(gate[0] == 'i'):
+        cuur = float(strs[2])
+        if cuur < 0:
+            return [abs(cuur)]
+
     if gate not in gates: return "NULL"
         
     number = int(strs[1])
@@ -166,6 +171,7 @@ def read__line(line,file):
 
 def get_currents(file_name):
     total_current = 0
+    ng_curr = 0
 
     with open(file_name,'r') as file:
         while True:
@@ -174,6 +180,11 @@ def get_currents(file_name):
             if not line: break
 
             out = read__line(line,file)
+
+            if(len(out) == 1):
+                ng_curr+=out[0]
+                continue
+
             if out == "NULL": continue
 
             print("\n")
@@ -247,12 +258,15 @@ def get_currents(file_name):
                     total_current = total_current + out
                     print(out)
 
-    return total_current
+    return total_current,ng_curr
 
 os.system(f"echo 'exit' | ngspice {file} > o.txt")
 
-total_leakage = get_currents('o.txt')
+total_leakage,ngspice_current = get_currents('o.txt')
 
-print("Leakage current total:" + str(total_leakage))
+print(' ')
+print("Leakage Estimated Current total : " + str(total_leakage) + "\n")
+
+print('Simulation Leakage Current total : ' + str(ngspice_current))
 
 os.system("rm o.txt")
