@@ -16,9 +16,9 @@ def get_current_val(ind_or_st,mosfet_type,W,params):
     if ind_or_st == "ind":
         df = pd.read_csv(f'../../Matrix/Stage-1/{mosfet_type}_W={W}.csv')
 
-        gate = params[0]
-        source = params[1]
-        drain = params[2]
+        drain = params[0]
+        gate = params[1]
+        source = params[2]
         current = params[3]
 
         currs = df[(df['v(gate)'] == gate) & (df['v(source)'] == source) & (df['v(drain)'] == drain)]
@@ -48,7 +48,7 @@ nand_g = {}
 nand_g[(0,0)] = 2*get_current_val("ind","pmos",64,[1.1,0,1.1,"i(vg)"]) + get_current_val("stacked","nmos",64,[0,0])
 nand_g[(0,1)] = get_current_val("ind","pmos",64,[1.1,0,1.1,"i(vg)"]) + get_current_val("ind","pmos",64,[1.1,1.1,1.1,"i(vd)"]) + get_current_val("stacked","nmos",64,[0,1.1])
 nand_g[(1,0)] = get_current_val("ind","pmos",64,[1.1,1.1,1.1,"i(vd)"]) + get_current_val("ind","pmos",64,[1.1,0,1.1,"i(vg)"]) + get_current_val("stacked","nmos",64,[1.1,0])
-nand_g[(1,1)] = 2*get_current_val("ind","pmos",64,[0,1.1,1.1,"i(vd)"]) + get_current_val("stacked","nmos",64,[1.1,1.1])
+nand_g[(1,1)] = 2*get_current_val("ind","pmos",64,[1.1,1.1,1.1,"i(vd)"]) + get_current_val("stacked","nmos",64,[1.1,1.1])
 
 nor_g = {}
 
@@ -88,10 +88,10 @@ nor_3_g = {}
 
 nor_3_g[(0, 0, 0)] = nor_g[(0, 0)] + nor_g[(0, 0)] + nor_g[(1, 1)] + nor_g[(1, 0)]
 nor_3_g[(0, 0, 1)] = nor_g[(0, 0)] + nor_g[(1, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)]
-nor_3_g[(0, 1, 0)] = nor_g[(0, 1)] + nor_g[(0, 0)] + nor_g[(1, 1)] + nor_g[(1, 0)]
-nor_3_g[(0, 1, 1)] = nor_g[(0, 1)] + nor_g[(1, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)]
-nor_3_g[(1, 0, 0)] = nor_g[(1, 0)] + nor_g[(0, 0)] + nor_g[(1, 1)] + nor_g[(1, 0)]
-nor_3_g[(1, 0, 1)] = nor_g[(1, 0)] + nor_g[(1, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)]
+nor_3_g[(0, 1, 0)] = nor_g[(0, 1)] + nor_g[(0, 0)] + nor_g[(0, 0)] + nor_g[(1, 1)]
+nor_3_g[(0, 1, 1)] = nor_g[(0, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)] + nor_g[(0, 1)]
+nor_3_g[(1, 0, 0)] = nor_g[(0, 1)] + nor_g[(0, 0)] + nor_g[(0, 0)] + nor_g[(1, 1)]
+nor_3_g[(1, 0, 1)] = nor_g[(0, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)] + nor_g[(0, 1)]
 nor_3_g[(1, 1, 0)] = nor_g[(1, 1)] + nor_g[(0, 0)] + nor_g[(0, 0)] + nor_g[(1, 1)]
 nor_3_g[(1, 1, 1)] = nor_g[(1, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)] + nor_g[(1, 0)]
 
@@ -114,7 +114,7 @@ nand_4_g[(1, 0, 1, 1)] = nand_g[(1, 0)] + nand_g[(1, 1)] + nand_g[(1, 1)] + nand
 nand_4_g[(1, 1, 0, 0)] = nand_g[(1, 1)] + nand_g[(0, 0)] + nand_g[(0, 0)] + nand_g[(1, 1)] + nand_g[(1, 0)]
 nand_4_g[(1, 1, 0, 1)] = nand_g[(1, 1)] + nand_g[(0, 1)] + nand_g[(0, 0)] + nand_g[(1, 1)] + nand_g[(1, 0)]
 nand_4_g[(1, 1, 1, 0)] = nand_g[(1, 1)] + nand_g[(1, 0)] + nand_g[(0, 0)] + nand_g[(1, 1)] + nand_g[(1, 0)]
-nand_4_g[(1, 1, 1, 1)] = nand_g[(1, 1)] + nand_g[(1, 1)] + nand_g[(0, 0)] + nand_g[(0, 0)] + nand_g[(0, 0)]
+nand_4_g[(1, 1, 1, 1)] = nand_g[(1, 1)] + nand_g[(1, 1)] + nand_g[(0, 0)] + nand_g[(0, 0)] + nand_g[(1, 1)]
 
 nor_4_g = {}
 
@@ -175,6 +175,8 @@ def get_currents(file_name):
 
             out = read__line(line,file)
             if out == "NULL": continue
+
+            print("\n")
 
             gate = out[0]
             inputs = out[1]
@@ -250,6 +252,7 @@ def get_currents(file_name):
 os.system(f"echo 'exit' | ngspice {file} > o.txt")
 
 total_leakage = get_currents('o.txt')
+
 print("Leakage current total:" + str(total_leakage))
 
 os.system("rm o.txt")

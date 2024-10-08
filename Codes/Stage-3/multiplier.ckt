@@ -232,5 +232,7 @@ echo " "
 echo "NOR 2"
 print v(n13_out) v(n14_out)
 
+print I(Vdd) I(V_P0) I(V_P1) I(V_P2) I(V_P3) I(V_G0) I(V_G1) I(V_G2) I(V_G3) I(V_Cn)
+
 .end
 .endc
