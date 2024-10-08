@@ -48,7 +48,7 @@ nand_g = {}
 nand_g[(0,0)] = 2*get_current_val("ind","pmos",64,[1.1,0,1.1,"i(vg)"]) + get_current_val("stacked","nmos",64,[0,0])
 nand_g[(0,1)] = get_current_val("ind","pmos",64,[1.1,0,1.1,"i(vg)"]) + get_current_val("ind","pmos",64,[1.1,1.1,1.1,"i(vd)"]) + get_current_val("stacked","nmos",64,[0,1.1])
 nand_g[(1,0)] = get_current_val("ind","pmos",64,[1.1,1.1,1.1,"i(vd)"]) + get_current_val("ind","pmos",64,[1.1,0,1.1,"i(vg)"]) + get_current_val("stacked","nmos",64,[1.1,0])
-nand_g[(1,1)] = 2*get_current_val("ind","pmos",64,[1.1,1.1,1.1,"i(vd)"]) + get_current_val("stacked","nmos",64,[1.1,1.1])
+nand_g[(1,1)] = 2*get_current_val("ind","pmos",64,[1.1,1.1,0,"i(vd)"]) + get_current_val("stacked","nmos",64,[1.1,1.1])
 
 nor_g = {}
 
@@ -265,7 +265,7 @@ os.system(f"echo 'exit' | ngspice {file} > o.txt")
 total_leakage,ngspice_current = get_currents('o.txt')
 
 print(' ')
-print("Leakage Estimated Current total : " + str(total_leakage) + "\n")
+print("Estimated Leakage Current total : " + str(total_leakage) + "\n")
 
 print('Simulation Leakage Current total : ' + str(ngspice_current))
 

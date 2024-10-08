@@ -1,0 +1,76 @@
+
+
+OR 4 Leakage Current:
+2.9037558052282e-08
+
+
+AND 4 Leakage Current:
+3.60477218e-08
+
+
+AND 4 Leakage Current:
+4.3463369999999996e-08
+
+
+AND 3 Leakage Current:
+3.00903702888e-08
+
+
+AND 2 Leakage Current:
+1.9103766887999997e-09
+
+
+AND 4 Leakage Current:
+3.6047721799999994e-08
+
+
+AND 4 Leakage Current:
+3.03164102888e-08
+
+
+AND 3 Leakage Current:
+2.8406033599999997e-08
+
+
+AND 2 Leakage Current:
+1.1214528e-08
+
+
+AND 3 Leakage Current:
+2.48331938e-08
+
+
+AND 3 Leakage Current:
+2.48331938e-08
+
+
+AND 2 Leakage Current:
+7.641688200000001e-09
+
+
+AND 2 Leakage Current:
+2.2604e-10
+
+
+AND 2 Leakage Current:
+2.2604e-10
+
+
+OR 4 Leakage Current:
+2.9037558052282003e-08
+
+
+NOR 4 Leakage Current:
+2.47915126888e-08
+
+
+NOR 3 Leakage Current:
+1.9308296200000002e-08
+
+
+NOR 2 Leakage Current:
+6.20195176e-09
+ 
+Estimated Leakage Current total : 4.15285823413246e-07
+
+Simulation Leakage Current total : 3.77881922e-07
