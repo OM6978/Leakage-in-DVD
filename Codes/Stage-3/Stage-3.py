@@ -273,4 +273,8 @@ print("Estimated Leakage Current total : " + str(total_leakage) + "\n")
 
 print('Simulation Leakage Current total : ' + str(ngspice_current))
 
+accuracy = (1 - abs(ngspice_current - total_leakage)/ngspice_current)*100
+
+print('\nTotal Accuracy : ' + str(accuracy) + '%')
+
 os.system("rm o.txt")
