@@ -141,7 +141,7 @@ def read__line(line,file):
     strs = line.split()
     if len(strs) == 0: return "NULL"
 
-    gates = ['NOT','NAND','NOR','AND','OR']
+    gates = ['Inverter','NAND','NOR','AND','OR']
     gate = strs[0]
 
     if(gate[0] == 'i'):
@@ -150,8 +150,12 @@ def read__line(line,file):
             return [abs(cuur)]
 
     if gate not in gates: return "NULL"
+
+    number = 1
         
-    number = int(strs[1])
+    if gate != "Inverter":
+        number = int(strs[1])
+
     inputs = []
 
     for i in range(number):
@@ -194,7 +198,7 @@ def get_currents(file_name):
 
             print(gate + " " + str(len(inputs)) + " Leakage Current:")
 
-            if gate == 'NOT':
+            if gate == 'Inverter':
                 total_current = total_current + not_g[inputs[0]]
                 print(not_g[inputs[0]])
             elif gate == 'NAND':
