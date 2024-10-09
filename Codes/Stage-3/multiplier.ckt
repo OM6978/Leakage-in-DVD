@@ -1,90 +1,3 @@
-* 74182 multiplier circuit implementation
-
-* .INCLUDE '32nm_HP.pm'
-* .include inv.sub
-* .include and_2.sub
-* .include and_3.sub
-* .include and_4.sub
-* .include nand_2.sub
-* .include nand_3.sub
-* .include nand_4.sub
-* .include nor_2.sub
-* .include nor_3.sub
-* .include nor_4.sub
-* .include or_4.sub
-
-* .subckt multiplier P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out n2_out n3_out n4_out n5_out n6_out n7_out n8_out n9_out n10_out n11_out n12_out n13_out n14_out vdd gnd
-
-* x0 Cn Cn_out vdd gnd inv
-* x1 P0 P1 P2 P3 P_out vdd gnd or_4
-
-* x2 G0 G1 G2 G3 n2_out vdd gnd and_4
-* x3 P1 G3 G2 G1 n3_out vdd gnd and_4
-* x4 P2 G3 G2 n4_out vdd gnd and_3
-* x5 P3 G3 n5_out vdd gnd and_2
-
-* x6 G2 G1 G0 Cn_out n6_out vdd gnd and_4
-* x7 P0 G2 G1 G0 n7_out vdd gnd and_4
-* x8 P1 G2 G1 n8_out vdd gnd and_3
-* x9 P2 G2 n9_out vdd gnd and_2
-
-* x10 G1 G0 Cn_out n10_out vdd gnd and_3
-* x11 P0 G1 G0 n11_out vdd gnd and_3
-* x12 P1 G1 n12_out vdd gnd and_2
-
-* x13 G0 Cn_out n13_out vdd gnd and_2
-* x14 P0 G0 n14_out vdd gnd and_2
-
-* x15 n2_out n3_out n4_out n5_out G_out vdd gnd or_4
-* x16 n6_out n7_out n8_out n9_out Cn_Z_out vdd gnd nor_4
-* x17 n10_out n11_out n12_out Cn_Y_out vdd gnd nor_3
-* x18 n13_out n14_out Cn_X_out vdd gnd nor_2
-
-
-* .ends multiplier
-
-
-
-
-* .PARAM supply = 1.1
-* .global gnd
-* .temp 25
-
-* Vdd node_vdd gnd 'SUPPLY'
-
-* *V_P0 P0 gnd PULSE(0 1.1 0ns 100ps 100ps 20ns 40ns)
-* *V_P1 P1 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_P2 P2 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_P3 P3 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_G0 G0 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_G1 G1 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_G2 G2 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_G3 G3 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-* *V_Cn Cn gnd dc 0
-
-* V_P0 P0 gnd 1.1
-* V_P1 P1 gnd 0
-* V_P2 P2 gnd 1.1
-* V_P3 P3 gnd 1.1
-* V_G0 G0 gnd 1.1
-* V_G1 G1 gnd 1.1
-* V_G2 G2 gnd 1.1
-* V_G3 G3 gnd 1.1
-* V_Cn Cn gnd 1.1
-
-* x100 P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out n2_out n3_out n4_out n5_out n6_out n7_out n8_out n9_out n10_out n11_out n12_out n13_out n14_out vdd gnd multiplier
-
-* .control
-
-* *plot v(P0) v(P1)+1.5 v(P2)+3 v(P3)+4.5 v(G0)+6 v(G1)+7.5 v(G2)+9 v(G3)+10.5 v(Cn)+12 v(P_out)+14 v(G_out)+15.5 v(Cn_Z_out)+17 v(Cn_Y_out)+18.5 v(Cn_X_out)+20
-* *plot v(P0) v(P1)+1.5 v(P2)+3 v(P3)+4.5 v(G0)+6 v(G1)+7.5 v(G2)+9 v(G3)+10.5 v(Cn)+12 v(P_out)+13.5 v(G_out)+15 v(Cn_Z_out)+16.5 v(Cn_Y_out)+18 v(Cn_X_out)+19.5
-
-* print v(P_out) v(G_out) v(Cn_Z_out) v(Cn_Y_out) v(Cn_X_out)
-* *print V(n2_out) V(n3_out) V(n4_out) V(n5_out) V(n6_out) V(n7_out) V(n8_out) V(n9_out) V(n10_out) V(n11_out) V(n12_out) V(n13_out) V(n14_out)
-
-* .endc
-* .end
-
 *74182 multiplier circuit implementation
 
 .INCLUDE '32nm_HP.pm'
@@ -139,35 +52,21 @@ x18 n13_out n14_out Cn_X_out vdd gnd nor_2
 
 Vdd node_vdd gnd 'SUPPLY'
 
-*V_P0 P0 gnd PULSE(0 1.1 0ns 100ps 100ps 20ns 40ns)
-*V_P1 P1 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_P2 P2 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_P3 P3 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_G0 G0 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_G1 G1 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_G2 G2 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_G3 G3 gnd PULSE(0 1.1 0ns 100ps 100ps 50ns 70ns)
-*V_Cn Cn gnd dc 0
-
 V_P0 P0 gnd 0
-V_P1 P1 gnd 1.1
-V_P2 P2 gnd 1.1
+V_P1 P1 gnd 0
+V_P2 P2 gnd 0
 V_P3 P3 gnd 0
 V_G0 G0 gnd 0
 V_G1 G1 gnd 0
-V_G2 G2 gnd 1.1
-V_G3 G3 gnd 1.1
-V_Cn Cn gnd 1.1
+V_G2 G2 gnd 0
+V_G3 G3 gnd 0
+V_Cn Cn gnd 0
 
 x1 P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out Cn_out n2_out n3_out n4_out n5_out n6_out n7_out n8_out n9_out n10_out n11_out n12_out n13_out n14_out node_vdd gnd multiplier
 
 
 .control
-set color0 = rgb:f/f/e
-set color1 = black
 
-*plot v(P0) v(P1)+1.5 v(P2)+3 v(P3)+4.5 v(G0)+6 v(G1)+7.5 v(G2)+9 v(G3)+10.5 v(Cn)+12 v(P_out)+14 v(G_out)+15.5 v(Cn_Z_out)+17 v(Cn_Y_out)+18.5 v(Cn_X_out)+20
-*plot v(P0) v(P1)+1.5 v(P2)+3 v(P3)+4.5 v(G0)+6 v(G1)+7.5 v(G2)+9 v(G3)+10.5 v(Cn)+12 v(P_out)+13.5 v(G_out)+15 v(Cn_Z_out)+16.5 v(Cn_Y_out)+18 v(Cn_X_out)+19.5
 op
 
 echo "Inverter"
@@ -184,7 +83,7 @@ echo "AND 4"
 print V(P1) V(G3) V(G2) V(G1)
 echo ""
 echo "AND 3"
-print V(P3) V(G2) V(G3)
+print V(P2) V(G3) V(G2)
 echo ""
 echo "AND 2"
 print V(P3) V(G3)
