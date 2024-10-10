@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 
-file = "multiplier.ckt"
+file = "adder.ckt"
 
 if os.path.isdir('Codes'):
     os.chdir("./Codes")

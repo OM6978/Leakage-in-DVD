@@ -1,0 +1,137 @@
+*74182 multiplier circuit implementation
+
+.INCLUDE '32nm_HP.pm'
+.include inv.sub
+.include and_2.sub
+.include and_3.sub
+.include and_4.sub
+.include nand_2.sub
+.include nand_3.sub
+.include nand_4.sub
+.include nor_2.sub
+.include nor_3.sub
+.include nor_4.sub
+.include or_4.sub
+
+.subckt adder P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out Cn_out n2_out n3_out n4_out n5_out n6_out n7_out n8_out n9_out n10_out n11_out n12_out n13_out n14_out vdd gnd
+
+x0 Cn Cn_out vdd gnd inv
+x1 P0 P1 P2 P3 P_out vdd gnd or_4
+
+x2 G0 G1 G2 G3 n2_out vdd gnd and_4
+x3 P1 G3 G2 G1 n3_out vdd gnd and_4
+x4 P2 G3 G2 n4_out vdd gnd and_3
+x5 P3 G3 n5_out vdd gnd and_2
+
+x6 G2 G1 G0 Cn_out n6_out vdd gnd and_4
+x7 P0 G2 G1 G0 n7_out vdd gnd and_4
+x8 P1 G2 G1 n8_out vdd gnd and_3
+x9 P2 G2 n9_out vdd gnd and_2
+
+x10 G1 G0 Cn_out n10_out vdd gnd and_3
+x11 P0 G1 G0 n11_out vdd gnd and_3
+x12 P1 G1 n12_out vdd gnd and_2
+
+x13 G0 Cn_out n13_out vdd gnd and_2
+x14 P0 G0 n14_out vdd gnd and_2
+
+x15 n2_out n3_out n4_out n5_out G_out vdd gnd or_4
+x16 n6_out n7_out n8_out n9_out Cn_Z_out vdd gnd nor_4
+x17 n10_out n11_out n12_out Cn_Y_out vdd gnd nor_3
+x18 n13_out n14_out Cn_X_out vdd gnd nor_2
+
+
+.ends adder
+
+
+
+
+.PARAM supply = 1.1
+.global gnd
+.temp 25
+
+Vdd node_vdd gnd 'SUPPLY'
+
+V_P0 P0 gnd 1.1
+V_P1 P1 gnd 1.1
+V_P2 P2 gnd 1.1
+V_P3 P3 gnd 0
+V_G0 G0 gnd 0
+V_G1 G1 gnd 0
+V_G2 G2 gnd 1.1
+V_G3 G3 gnd 1.1
+V_Cn Cn gnd 1.1
+
+x1 P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out Cn_out n2_out n3_out n4_out n5_out n6_out n7_out n8_out n9_out n10_out n11_out n12_out n13_out n14_out node_vdd gnd adder
+
+
+.control
+
+op
+
+echo "Inverter"
+print v(Cn)
+echo " "
+echo "OR 4"
+print v(P0) v(P1) V(P2) V(P3)
+
+echo " "
+echo "AND 4"
+print V(G0) V(G1) V(G2) V(G3)
+echo ""
+echo "AND 4"
+print V(P1) V(G3) V(G2) V(G1)
+echo ""
+echo "AND 3"
+print V(P2) V(G3) V(G2)
+echo ""
+echo "AND 2"
+print V(P3) V(G3)
+
+echo " "
+echo "AND 4"
+print V(G2) V(G1) V(G0) V(Cn_out)
+echo ""
+echo "AND 4"
+print V(P0) V(G2) V(G1) V(G0)
+echo ""
+echo "AND 3"
+print V(P1) V(G2) V(G1)
+echo ""
+echo "AND 2"
+print V(P2) V(G2)
+
+echo ""
+echo "AND 3"
+print V(G1) V(G0) V(Cn_out)
+echo ""
+echo "AND 3"
+print V(P0) V(G1) V(G0)
+echo ""
+echo "AND 2"
+print V(P1) V(G1)
+
+echo ""
+echo "AND 2"
+print V(G0) V(Cn_out)
+echo ""
+echo "AND 2"
+print V(P0) V(G0)
+
+echo " "
+echo "OR 4"
+print v(n2_out) v(n3_out) V(n4_out) V(n5_out)
+echo " "
+echo "NOR 4"
+print v(n6_out) v(n7_out) V(n8_out) V(n9_out)
+echo " "
+echo "NOR 3"
+print v(n10_out) v(n11_out) V(n12_out)
+echo " "
+echo "NOR 2"
+print v(n13_out) v(n14_out)
+
+print I(Vdd) I(V_P0) I(V_P1) I(V_P2) I(V_P3) I(V_G0) I(V_G1) I(V_G2) I(V_G3) I(V_Cn)
+
+.end
+.endc

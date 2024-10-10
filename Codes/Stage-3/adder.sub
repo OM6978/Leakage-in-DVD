@@ -1,0 +1,45 @@
+.subckt adder P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out vdd gnd
+
+x0 Cn Cn_out vdd gnd inv
+
+x1 P0 P1 P2 P3 P_out vdd gnd or_4
+
+x2 G0 G1 G2 G3 n2_out vdd gnd and_4
+x3 P1 G3 G2 G1 n3_out vdd gnd and_4
+x4 P2 G3 G2 n4_out vdd gnd and_3
+x5 P3 G3 n5_out vdd gnd and_2
+
+x6 G2 G1 G0 Cn_out n6_out vdd gnd and_4
+x7 P0 G2 G1 G0 n7_out vdd gnd and_4
+x8 P1 G2 G1 n8_out vdd gnd and_3
+x9 P2 G2 n9_out vdd gnd and_2
+
+x10 G1 G0 Cn_out n10_out vdd gnd and_3
+x11 P0 G1 G0 n11_out vdd gnd and_3
+x12 P1 G1 n12_out vdd gnd and_2
+
+x13 G0 Cn_out n13_out vdd gnd and_2
+x14 P0 G0 n14_out vdd gnd and_2
+
+x15 n2_out n3_out n4_out n5_out G_out vdd gnd or_4
+x16 n6_out n7_out n8_out n9_out Cn_Z_out vdd gnd nor_4
+x17 n10_out n11_out n12_out Cn_Y_out vdd gnd nor_3
+x18 n13_out n14_out Cn_X_out vdd gnd nor_2
+
+
+.ends multiplier
+
+
+*.subckt inv node_a node_out vdd gnd 
+*.subckt and_2 node_a node_b node_out vdd gnd
+*.subckt and_3 node_a node_b node_c node_out vdd gnd
+*.subckt and_4 node_a node_b node_c node_d node_out vdd gnd
+*.subckt nand_2 node_a node_b node_out vdd gnd
+*.subckt nand_3 node_a node_b node_c node_out vdd gnd
+*.subckt nand_4 node_a node_b node_c node_d node_out vdd gnd
+*.subckt nor_2 node_a node_b node_out vdd gnd
+*.subckt nor_3 node_a node_b node_c node_out vdd gnd
+*.subckt nor_4 node_a node_b node_c node_d node_out vdd gnd
+*.subckt or_4 node_a node_b node_c node_d node_out vdd gnd
+*.subckt multiplier P0 P1 P2 P3 G0 G1 G2 G3 Cn P_out G_out Cn_Z_out Cn_Y_out Cn_X_out vdd gnd
+
