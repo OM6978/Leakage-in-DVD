@@ -52,9 +52,9 @@ x18 n13_out n14_out Cn_X_out vdd gnd nor_2
 
 Vdd node_vdd gnd 'SUPPLY'
 
-V_P0 P0 gnd 1.1
-V_P1 P1 gnd 1.1
-V_P2 P2 gnd 1.1
+V_P0 P0 gnd 0
+V_P1 P1 gnd 0
+V_P2 P2 gnd 0
 V_P3 P3 gnd 0
 V_G0 G0 gnd 0
 V_G1 G1 gnd 0
