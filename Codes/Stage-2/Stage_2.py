@@ -14,7 +14,8 @@ def read__line(tables,line):
         tables[strs[0]].append(float(strs[2]))
     else : tables[strs[0]] = [float(strs[2])]
 
-def euclidean_distance(t1, t2):
+def euclidean_distance(t1, t2):        # sum_acc+= get_inp_curr(curr)
+        # num+=1
     return math.sqrt((t1[0] - t2[0])**2 + (t1[1] - t2[1])**2 + (t1[2] - t2[2])**2)
 
 def add_prev_entry(file,df):

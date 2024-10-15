@@ -137,7 +137,7 @@ nor_4_g[(1, 1, 1, 1)] = nor_g[(1, 1)] + nor_g[(1, 1)] + nor_g[(0, 0)] + nor_g[(0
 
 #----------- Calculating Circuit Currents -----------
 
-def read__line(line,file):
+def read_ng_line(line,file):
     strs = line.split()
     if len(strs) == 0: return "NULL"
 
@@ -183,7 +183,7 @@ def get_currents(file_name):
 
             if not line: break
 
-            out = read__line(line,file)
+            out = read_ng_line(line,file)
 
             if(len(out) == 1):
                 ng_curr+=out[0]
@@ -191,40 +191,40 @@ def get_currents(file_name):
 
             if out == "NULL": continue
 
-            print("\n")
+            # print("\n")
 
             gate = out[0]
             inputs = out[1]
 
-            print(gate + " " + str(len(inputs)) + " Leakage Current:")
+            # print(gate + " " + str(len(inputs)) + " Leakage Current:")
 
             if gate == 'Inverter':
                 total_current = total_current + not_g[inputs[0]]
-                print(not_g[inputs[0]])
+                # print(not_g[inputs[0]])
             elif gate == 'NAND':
                 if len(inputs) == 2:
                     total_current = total_current + nand_g[tuple(inputs)]
-                    nand_g[tuple(inputs)]
+                    # print(nand_g[tuple(inputs)])
                 elif len(inputs) == 3:
                     total_current = total_current + nand_3_g[tuple(inputs)]
-                    print(nand_3_g[tuple(inputs)])
+                    # print(nand_3_g[tuple(inputs)])
                 else:
                     total_current = total_current + nand_4_g[tuple(inputs)]
-                    print(nand_4_g[tuple(inputs)])
+                    # print(nand_4_g[tuple(inputs)])
             elif gate == 'NOR':
                 if len(inputs) == 2:
                     total_current = total_current + nor_g[tuple(inputs)]
-                    print(nor_g[tuple(inputs)])
+                    # print(nor_g[tuple(inputs)])
                 elif len(inputs) == 3:
                     total_current = total_current + nor_3_g[tuple(inputs)]
-                    print(nand_3_g[tuple(inputs)])
+                    # print(nand_3_g[tuple(inputs)])
                 else:
                     total_current = total_current + nor_4_g[tuple(inputs)]
-                    print(nand_4_g[tuple(inputs)])
+                    # print(nand_4_g[tuple(inputs)])
             elif gate == 'OR':
                 if len(inputs) == 2:
                     total_current = total_current + or_g[tuple(inputs)]
-                    print(or_g[tuple(inputs)])
+                    # print(or_g[tuple(inputs)])
                 elif len(inputs) == 3:
                     if inputs == [0]*3:
                         out = nor_3_g[tuple(inputs)] + not_g[1]
@@ -232,7 +232,7 @@ def get_currents(file_name):
                         out = nor_3_g[tuple(inputs)] + not_g[0]
 
                     total_current = total_current + out
-                    print(out)
+                    # print(out)
                 else:
                     if inputs == [0]*4:
                         out = nor_4_g[tuple(inputs)] + not_g[1]
@@ -240,11 +240,11 @@ def get_currents(file_name):
                         out = nor_4_g[tuple(inputs)] + not_g[0]
                     
                     total_current = total_current + out
-                    print(out)
+                    # print(out)
             else:
                 if len(inputs) == 2:
                     total_current = total_current + and_g[tuple(inputs)]
-                    print(nand_g[tuple(inputs)])
+                    # print(nand_g[tuple(inputs)])
                 elif len(inputs) == 3:
                     if inputs == [1]*3:
                         out = nand_3_g[tuple(inputs)] + not_g[0]
@@ -252,7 +252,7 @@ def get_currents(file_name):
                         out = nand_3_g[tuple(inputs)] + not_g[1]
 
                     total_current = total_current + out
-                    print(out)
+                    # print(out)
                 else:
                     if inputs == [1]*4:
                         out = nand_4_g[tuple(inputs)] + not_g[0]
@@ -260,21 +260,77 @@ def get_currents(file_name):
                         out = nand_4_g[tuple(inputs)] + not_g[1]
                     
                     total_current = total_current + out
-                    print(out)
+                    # print(out)
 
     return total_current,ng_curr
 
-os.system(f"echo 'exit' | ngspice {file} > o.txt")
+def get_inp_curr(ng_file):
+    os.system(f"echo 'exit' | ngspice {ng_file} > o.txt")
 
-total_leakage,ngspice_current = get_currents('o.txt')
+    total_leakage,ngspice_current = get_currents('o.txt')
 
-print(' ')
-print("Estimated Leakage Current total : " + str(total_leakage) + "\n")
+    accuracy = 0
 
-print('Simulation Leakage Current total : ' + str(ngspice_current))
+    if(ngspice_current!=0):
+        accuracy = (1 - abs(ngspice_current - total_leakage)/ngspice_current)*100
 
-accuracy = (1 - abs(ngspice_current - total_leakage)/ngspice_current)*100
+    os.system("rm o.txt")
 
-print('\nTotal Accuracy : ' + str(accuracy) + '%')
+    return accuracy
 
-os.system("rm o.txt")
+def sweep_file_inputs(orig_file):
+    os.system(f"touch circ_0.ckt")
+    files = ["circ_0.ckt"]
+
+    with open(orig_file,'r') as curr:
+        while True:
+            line = curr.readline()
+            if not line: break
+
+            N = len(files)
+            for i in range(N):
+                if(line[0] == 'V' and line[1] == '_'):
+                    os.system(f"cp {files[i]} {files[i][:-4]}1.ckt")
+                    os.system(f"cp {files[i]} {files[i][:-4]}0.ckt")
+                    os.system(f"rm {files[i]}")
+
+                    files.append(f"{files[i][:-4]}1.ckt")
+                    files[i] = f"{files[i][:-4]}0.ckt"
+
+                    line1 = line[:12] + "0\n"
+                    line2 = line[:12] + "1.1\n"
+
+                    with open(files[i],'a') as lol:
+                        lol.write(line1)
+                    with open(files[-1],'a') as lol:
+                        lol.write(line2)
+                else:
+                    with open(files[i],'a') as lol:
+                        lol.write(line)
+
+    sum_acc = 0
+    num = 0
+    faulty_num = 0
+
+    os.system("touch ../../Matrix/Stage-3/out.txt")
+    with open("./../../Matrix/Stage-3/out.txt",'a') as lol:
+        for curr in files:
+            curr_acc = get_inp_curr(curr)
+            lol.write(f"\n{curr}\naccuracy: {curr_acc}\n")
+
+            if curr_acc > 87:
+                sum_acc+= curr_acc
+                num+=1
+            else: faulty_num+=1
+
+            print("files done : " + str(num + faulty_num))
+            os.system(f"rm {curr}")
+
+    print("Inputs tested: " + str(num+faulty_num))
+
+    if(num!=0):
+        print("Average model accuracy: " + str(sum_acc/num))
+
+    # print("Excuded accuracies :" + str(faulty_num))
+
+sweep_file_inputs(file)
