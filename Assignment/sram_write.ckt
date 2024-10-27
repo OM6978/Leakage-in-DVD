@@ -17,7 +17,7 @@ x1 node_v1 node_v2 node_vdd gnd sram_write
 run
 set color0 = rgb:f/f/e
 set color1 = black
-plot v(node_v2) vs v(node_v1) 
+plot v(node_v2) vs v(node_v1) v(node_v1) vs v(node_v2) 
 
 .endc
 .end
