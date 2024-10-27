@@ -1,0 +1,19 @@
+.subckt sram_write node_v1 node_v2 vdd gnd 
+
+.INCLUDE '22nm_MGK.pm'
+.PARAM Lmin = 22n
+.PARAM nWmin = 22n
+.PARAM pWmin = 44n
+.PARAM Ldiff = 44n
+
+Mp1 node_v2 node_v1 vdd vdd pmos W={pWmin} L={Lmin} AS={pWmin*Ldiff} AD={pWmin*Ldiff} PS={2*(Ldiff+pWmin)} PD={2*(Ldiff+pWmin)}
+Mn1 node_v2 node_v1 0 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
+Mn2 vdd vdd node_v2 node_v2 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
+
+
+Mn3 node_v1 vdd 0 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
+Mp2 node_v1 node_v2 vdd vdd pmos W={pWmin} L={Lmin} AS={pWmin*Ldiff} AD={pWmin*Ldiff} PS={2*(Ldiff+pWmin)} PD={2*(Ldiff+pWmin)}
+Mn4 0 node_v2 node_v1 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
+
+.ends sram_write
+
