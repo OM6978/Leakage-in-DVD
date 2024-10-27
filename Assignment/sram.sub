@@ -1,4 +1,4 @@
-.subckt sram_write node_v1 node_v2 WL BLL BLR vdd gnd 
+.subckt sram node_v1 node_v2 BLL WL BLR vdd gnd 
 
 .INCLUDE '22nm_MGK.pm'
 .PARAM Lmin = 22n
@@ -15,5 +15,5 @@ Mp2 node_v2 node_v1 vdd vdd pmos W={pWmin} L={Lmin} AS={pWmin*Ldiff} AD={pWmin*L
 Mn3 node_v2 node_v1 0 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
 Mn4 BLR WL node_v2 0 nmos W={nWmin} L={Lmin} AS={nWmin*Ldiff} AD={nWmin*Ldiff} PS={2*(Ldiff+nWmin)} PD={2*(Ldiff+nWmin)}
 
-.ends sram_write
+.ends sram
 
