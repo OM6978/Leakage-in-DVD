@@ -1,0 +1,24 @@
+sram_read gate implementation
+
+.INCLUDE '22nm_MGK.pm'
+.include sram_read.sub
+.PARAM supply=1.1
+.global gnd
+.temp 25
+
+Vdd node_vdd gnd 'SUPPLY'
+
+V_v1 node_v1 gnd DC 0
+
+x1 node_v1 node_v2 node_vdd gnd sram_read
+
+.DC V_v1 0 1.1 0.0001 
+.control
+run
+set color0 = rgb:f/f/e
+set color1 = black
+plot v(node_v2) vs v(node_v1) v(node_v1) vs v(node_v2)
+
+.endc
+.end
+
